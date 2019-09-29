@@ -41,6 +41,10 @@ func (app *App) Initialize(MongoURI string) {
 
 func (app *App) setRouters() {
 	app.Post("/api/blogs/create", app.handleRequest(controllers.PostCreateBlog))
+	app.Get("/api/blogs", app.handleRequest(controllers.GetBlogs))
+	app.Get("/api/blog/{_id}", app.handleRequest(controllers.GetBlog))
+	app.Delete("/api/blog/{_id}/delete", app.handleRequest(controllers.DeleteBlog))
+	app.Put("/api/blog/{_id}/update", app.handleRequest(controllers.PutUpdateBlog))
 }
 
 // Get wraps the router for GET method

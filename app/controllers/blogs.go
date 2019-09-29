@@ -2,12 +2,17 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/anirudh06/blog-api-with-golang/app/models"
+	"github.com/globalsign/mgo/bson"
+	"github.com/gorilla/mux"
 )
 
 // PostCreateBlog is for creating blog
@@ -21,4 +26,61 @@ func PostCreateBlog(db *mongo.Database, res http.ResponseWriter, req *http.Reque
 		log.Fatal(err)
 	}
 	respondJSON(res, http.StatusOK, blog)
+}
+
+// GetBlogs is for getting all blogs
+func GetBlogs(db *mongo.Database, res http.ResponseWriter, req *http.Request) {
+	var blogs []*models.Blog
+	cur, err := db.Collection("blogs").Find(context.TODO(), bson.M{}, options.Find())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for cur.Next(context.TODO()) {
+		var elem models.Blog
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+		blogs = append(blogs, &elem)
+	}
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+	cur.Close(context.TODO())
+	fmt.Println("ip: " + req.Header.Get("X-Real-Ip"))
+
+	respondJSON(res, http.StatusOK, blogs)
+}
+
+// GetBlog is for getting a single blog
+func GetBlog(db *mongo.Database, res http.ResponseWriter, req *http.Request) {
+	params := mux.Vars(req)
+	blog := models.Blog{}
+	objID, err := primitive.ObjectIDFromHex(params["_id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": objID}
+	decoder := db.Collection("blogs").FindOne(context.TODO(), filter)
+	decoder.Decode(&blog)
+	respondJSON(res, http.StatusOK, blog)
+}
+
+// DeleteBlog is for deleting a single blog
+func DeleteBlog(db *mongo.Database, res http.ResponseWriter, req *http.Request) {
+	params := mux.Vars(req)
+	objID, err := primitive.ObjectIDFromHex(params["_id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": objID}
+	deleteResult, err := db.Collection("blogs").DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	respondJSON(res, http.StatusOK, deleteResult)
+}
+
+// PutUpdateBlog is for updating a single blog
+func PutUpdateBlog(db *mongo.Database, res http.ResponseWriter, req *http.Request) {
 }
