@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/anirudh06/blog-api-with-golang/app/controllers"
+	"github.com/anirudhganwal06/blog-api-with-golang/app/controllers"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 

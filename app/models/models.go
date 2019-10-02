@@ -7,3 +7,8 @@ type Blog struct {
 	Content string `json:"content" bson:"content"`
 	Author  string `json:"author" bson:"author"`
 }
+
+// Response model
+type Response struct {
+	Message string `json:"message" bson:"message"`
+}

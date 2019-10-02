@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/anirudh06/blog-api-with-golang/app/models"
+	"github.com/anirudhganwal06/blog-api-with-golang/app/models"
 	"github.com/globalsign/mgo/bson"
 	"github.com/gorilla/mux"
 )
@@ -47,7 +46,6 @@ func GetBlogs(db *mongo.Database, res http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 	cur.Close(context.TODO())
-	fmt.Println("ip: " + req.Header.Get("X-Real-Ip"))
 
 	respondJSON(res, http.StatusOK, blogs)
 }
@@ -74,13 +72,35 @@ func DeleteBlog(db *mongo.Database, res http.ResponseWriter, req *http.Request) 
 		log.Fatal(err)
 	}
 	filter := bson.M{"_id": objID}
-	deleteResult, err := db.Collection("blogs").DeleteOne(context.TODO(), filter)
+	_, err = db.Collection("blogs").DeleteOne(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
+	deleteResult := models.Response{}
+	deleteResult.Message = "Blog deleted successfully"
 	respondJSON(res, http.StatusOK, deleteResult)
 }
 
 // PutUpdateBlog is for updating a single blog
 func PutUpdateBlog(db *mongo.Database, res http.ResponseWriter, req *http.Request) {
+	params := mux.Vars(req)
+	blog := models.Blog{}
+	blog.Title = req.FormValue("title")
+	blog.Content = req.FormValue("content")
+	blog.Author = req.FormValue("author")
+	objID, err := primitive.ObjectIDFromHex(params["_id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": objID}
+	update := bson.M{"$set": bson.M{
+		"title":   req.FormValue("title"),
+		"content": req.FormValue("content"),
+		"author":  req.FormValue("author"),
+	},
+	}
+	db.Collection("blogs").FindOneAndUpdate(context.TODO(), filter, update)
+	updateResponse := models.Response{}
+	updateResponse.Message = "Blog updated successfully!"
+	respondJSON(res, http.StatusOK, updateResponse)
 }
