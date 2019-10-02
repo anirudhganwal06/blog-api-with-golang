@@ -18,5 +18,8 @@ This is a basic blog api designed using golang.
 >>>> Testing can be done using POSTMAN
 
 ## Endpoints
-### POST "/api/blogs/create"
-Enter three key values in Body (x-www-form-urlencoded) `title, content, author`
+1. Create a blog > POST "/api/blogs/create" > Enter three key values in Body (x-www-form-urlencoded) `title, content, author`
+2. Get all blogs > GET "/api/blogs" > This get an array of all blogs.
+3. Get a specific blog > GET "/api/blog/{_id}" > This gets the object of the specified blog id.
+4. Delete a specific blog > DELETE "/api/blog/{_id}/delete" > This deletes the blog identified by the specified id. 
+5. Update a specific blog > PUT "/api/blog/{_id}/update" > This updates the specified blog. This also requires three key values in Body (x-www-form-urlencoded) `title, content, author`
