@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/anirudh06/blog-api-with-golang/app/models"
+	"github.com/anirudhganwal06/blog-api-with-golang/app/models"
 	"github.com/globalsign/mgo/bson"
 	"github.com/gorilla/mux"
 )

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/anirudh06/blog-api-with-golang/app"
-	"github.com/anirudh06/blog-api-with-golang/config"
+	"github.com/anirudhganwal06/blog-api-with-golang/app"
+	"github.com/anirudhganwal06/blog-api-with-golang/config"
 )
 
 func main() {
